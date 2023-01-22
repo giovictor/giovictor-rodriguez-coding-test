@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class ProductsController extends Controller
 {
@@ -11,19 +12,28 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'page' => 'numeric',
+            'limit' => 'numeric',
+        ]);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $page = $request->has('page') ? $request->input('page') : '1';
+        $limit = $request->has('limit') ? $request->input('limit') : '10';
+
+        $totalProductsCount = Product::count();
+        $noOfPages = $totalProductsCount / $limit;
+        $products = Product::offset(($page - 1) * $limit)->limit($limit);
+
+        return response()->json([
+            'page'  => $page,
+            'limit' => $limit,
+            'total' => $totalProductsCount,
+            'pageTotal' => count($products->get()),
+            'noOfPages' => $noOfPages,
+            'data'  => $products->get()
+        ]);
     }
 
     /**
@@ -45,18 +55,11 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $product = Product::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->json([
+            'data' => $product
+        ]);
     }
 
     /**
