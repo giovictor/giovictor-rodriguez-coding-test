@@ -29,9 +29,9 @@ class ProductsTest extends TestCase
             ->assertJsonStructure([
                 'page',
                 'limit',
+                'noOfPages',
                 'total',
                 'pageTotal',
-                'noOfPages',
                 'data' => [
                     '*' => [
                         'id',
@@ -60,9 +60,9 @@ class ProductsTest extends TestCase
             ->assertJsonStructure([
                 'page',
                 'limit',
+                'noOfPages',
                 'total',
                 'pageTotal',
-                'noOfPages',
                 'data' => [
                     '*' => [
                         'id',
@@ -126,9 +126,6 @@ class ProductsTest extends TestCase
 
         $response = $this->get('/api/products/'.$invalidId);
 
-        $response->assertStatus(200)
-        ->assertJson([
-            'data' => null
-        ]);
+        $response->assertStatus(404);
     }
 }

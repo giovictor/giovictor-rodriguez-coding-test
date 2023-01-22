@@ -23,15 +23,15 @@ class ProductsController extends Controller
         $limit = $request->has('limit') ? $request->input('limit') : '10';
 
         $totalProductsCount = Product::count();
-        $noOfPages = $totalProductsCount / $limit;
+        $noOfPages = ceil($totalProductsCount / $limit);
         $products = Product::offset(($page - 1) * $limit)->limit($limit);
 
         return response()->json([
             'page'  => $page,
             'limit' => $limit,
+            'noOfPages' => $noOfPages,
             'total' => $totalProductsCount,
             'pageTotal' => count($products->get()),
-            'noOfPages' => $noOfPages,
             'data'  => $products->get()
         ]);
     }
@@ -53,10 +53,8 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        $product = Product::find($id);
-
         return response()->json([
             'data' => $product
         ]);
