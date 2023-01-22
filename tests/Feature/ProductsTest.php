@@ -92,11 +92,7 @@ class ProductsTest extends TestCase
 
     public function test_fetching_a_single_product_by_valid_id()
     {
-        $product = Product::factory()->create([
-            'name' => 'Product XYZ',
-            'description' => 'Best Product Ever',
-            'price' => 23.24
-        ]);
+        $product = Product::factory()->create();
 
         $response = $this->get('/api/products/'.$product->id);
 
@@ -116,16 +112,15 @@ class ProductsTest extends TestCase
 
     public function test_fetching_a_single_product_by_invalid_id()
     {
-        $product = Product::factory()->create([
-            'name' => 'Product XYZ',
-            'description' => 'Best Product Ever',
-            'price' => 23.24
-        ]);
+        $product = Product::factory()->create();
 
         $invalidId = 'randomtestid';
 
         $response = $this->get('/api/products/'.$invalidId);
 
-        $response->assertStatus(404);
+        $response->assertStatus(404)
+            ->assertJson([
+                'message' => 'Product was not found.'
+            ]);
     }
 }

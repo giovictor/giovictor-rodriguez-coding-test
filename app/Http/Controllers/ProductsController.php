@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Http\Requests\ProductRequest;
 
 class ProductsController extends Controller
 {
@@ -12,13 +13,8 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(ProductRequest $request)
     {
-        $request->validate([
-            'page' => 'numeric',
-            'limit' => 'numeric',
-        ]);
-
         $page = $request->has('page') ? $request->input('page') : '1';
         $limit = $request->has('limit') ? $request->input('limit') : '10';
 
