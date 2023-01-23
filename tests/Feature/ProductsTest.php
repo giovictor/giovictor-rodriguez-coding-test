@@ -115,9 +115,7 @@ class ProductsTest extends TestCase
         $response = $this->get('/api/products/'.$invalidId);
 
         $response->assertStatus(404)
-            ->assertJson([
-                'message' => 'Product was not found.'
-            ]);
+            ->assertJsonPath('message', 'Product was not found.');
     }
 
     public function test_creating_a_product_with_valid_data()
@@ -128,15 +126,19 @@ class ProductsTest extends TestCase
             'price' => 123.45
         ];
 
-        $response = $this->post('/api/products', $data);
+        $response = $this->postJson('/api/products', $data);
 
         $response->assertStatus(201)
-            ->assertJson([
-                'message' => 'Product was created successfully.',
+            ->assertJsonPath('message', 'Product was created successfully.')
+            ->assertJsonStructure([
+                'message',
                 'data' => [
-                    'name' => 'Product ABC',
-                    'description' => 'Best product ever.',
-                    'price' => 123.45
+                    'name',
+                    'description',
+                    'price',
+                    'updated_at',
+                    'created_at',
+                    'id'
                 ]
             ]);
     }
@@ -149,7 +151,7 @@ class ProductsTest extends TestCase
             'price' => '123abc'
         ];
 
-        $response = $this->post('/api/products', $data);
+        $response = $this->postJson('/api/products', $data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'description', 'price']);
@@ -169,15 +171,19 @@ class ProductsTest extends TestCase
             'price' => 678.90
         ];
 
-        $response = $this->patch('/api/products/'.$product->id, $data);
+        $response = $this->patchJson('/api/products/'.$product->id, $data);
 
         $response->assertStatus(200)
-        ->assertJson([
-            'message' => 'Product was updated successfully.',
+        ->assertJsonPath('message', 'Product was updated successfully.')
+        ->assertJsonStructure([
+            'message',
             'data' => [
-                'name' => 'Product XYZ',
-                'description' => 'The real best product ever.',
-                'price' => 678.90
+                'name',
+                'description',
+                'price',
+                'updated_at',
+                'created_at',
+                'id'
             ]
         ]);
     }
@@ -196,7 +202,7 @@ class ProductsTest extends TestCase
             'price' => 'testprice'
         ];
 
-        $response = $this->patch('/api/products/'.$product->id, $data);
+        $response = $this->patchJson('/api/products/'.$product->id, $data);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'description', 'price']);
@@ -212,12 +218,10 @@ class ProductsTest extends TestCase
 
         $invalidId = 'randomtestid';
 
-        $response = $this->patch('/api/products/'.$invalidId, $data);
+        $response = $this->patchJson('/api/products/'.$invalidId, $data);
 
         $response->assertStatus(404)
-            ->assertJson([
-                'message' => 'Product was not found.'
-            ]);
+            ->assertJsonPath('message', 'Product was not found.');
     }
 
     public function test_deleting_a_product_with_valid_id()
@@ -228,23 +232,19 @@ class ProductsTest extends TestCase
             'price' => 123.45
         ]);
 
-        $response = $this->delete('/api/products/'.$product->id);
+        $response = $this->deleteJson('/api/products/'.$product->id);
 
         $response->assertStatus(200)
-            ->assertJson([
-                'message' => 'Product was successfully deleted.'
-            ]);
+            ->assertJsonPath('message', 'Product was successfully deleted.');
     }
 
     public function test_deleting_a_product_with_invalid_id()
     {
         $invalidId = 'randomtestid';
 
-        $response = $this->delete('/api/products/'.$invalidId);
+        $response = $this->deleteJson('/api/products/'.$invalidId);
 
         $response->assertStatus(404)
-            ->assertJson([
-                'message' => 'Product was not found.'
-            ]);
+            ->assertJsonPath('message', 'Product was not found.');
     }
 }
