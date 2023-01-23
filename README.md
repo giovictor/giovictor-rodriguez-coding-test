@@ -122,93 +122,93 @@ A:
  2. I will create a table named `featured_categories_products` as a pivot table to handle identifier from `featured_caterogies` and `products` table to allow many to many relationship on what products belong to some featured categories.
  3. I will create an API endpoint to fetch all featured products and format their response by grouping them into each categories.
 
-`/api/featured`
+    `/api/featured`
 
- ```
-{
-    "data": {
-        "best_seller": [
+    ```
+    {
+        "data": {
+            "best_seller": [
+                {
+                    "name": 'Product A',
+                    "price": 12.34
+                },
+                {
+                    "name": 'Product B',
+                    "price": 67.89
+                }
+                ...
+            ],
+            "top_rated": [
+                {
+                    "name": 'Product 1',
+                    "price": 123.45
+                },
+                {
+                    "name": 'Product 2',
+                    "price": 678.90
+                }
+                ...
+            ]
+        }
+    }
+    ```
+4. I will create another API endpoint to fetch a featured categories to get their products and show more details for each products listed.
+
+    `/api/featured/{category}`
+
+    ```
+    {
+        "data": [
             {
                 "name": 'Product A',
-                "price": 12.34
+                "price": 12.34,
+                "description": 'Best product.',
+                "stock": 100
             },
             {
                 "name": 'Product B',
-                "price": 67.89
+                "price": 67.89,
+                "description": '2nd Best product.',
+                "stock": 40
             }
-            ...
-        ],
-        "top_rated": [
-            {
-                "name": 'Product 1',
-                "price": 123.45
-            },
-            {
-                "name": 'Product 2',
-                "price": 678.90
-            }
-            ...
+            ... 
         ]
     }
-}
- ```
-4. I will create another API endpoint to fetch a featured categories to get their products and show more details for each products listed.
-
-`/api/featured/{category}`
-
-```
-{
-    "data": [
-        {
-            "name": 'Product A',
-            "price": 12.34,
-            "description": 'Best product.',
-            "stock": 100
-        },
-        {
-            "name": 'Product B',
-            "price": 67.89,
-            "description": '2nd Best product.',
-            "stock": 40
-        }
-        ... 
-    ]
-}
-```
+    ```
 
 ## Coding Test Setup Instructions
 
 1. Open a terminal and clone the repository
 
-```bash
-$ https://github.com/giovictor/giovictor-rodriguez-coding-test.git
-```
+    ```
+    git clone https://github.com/giovictor/giovictor-rodriguez-coding-test.git
+    ```
 
 2. Change to the directory of the repository
-```bash
-$ cd giovictor-rodriguez-coding-test
-```
+    ```
+    cd giovictor-rodriguez-coding-test
+    ```
 
 3. Run `composer install` to generate a vendor folder
 4. Copy the file `.env.example` and rename it `.env`
 5. Run `php artisan key:generate`
 6. Create a MySQL database named `giovictor-rodriguez-coding-test` or any db name you prefer
 7. Update each of the following environment variables in the `.env` file required for the database connection:
-```
-DB_HOST={MYSQL_HOST} # or default 127.0.0.1
-DB_PORT={MYSQL_PORT} # or default port
-DB_DATABASE=giovictor-rodriguez-coding-test # or another db name preferred
-DB_USERNAME={MYSQL_DATABASE_USERNAME}
-DB_PASSWORD={MYSQL_DATABASE_PASSWORD}
-```
+    ```
+    DB_HOST={MYSQL_HOST} # or default 127.0.0.1
+    DB_PORT={MYSQL_PORT} # or default port
+    DB_DATABASE=giovictor-rodriguez-coding-test # or another db name preferred
+    DB_USERNAME={MYSQL_DATABASE_USERNAME}
+    DB_PASSWORD={MYSQL_DATABASE_PASSWORD}
+    ```
 
-Make sure the database was created or existing and the given credentials were correct in the `.env` file before proceeding with the next steps.
+    Make sure the database was created or existing and the given credentials were correct in the `.env` file before proceeding with the next steps.
 
 8. Back to the terminal, run `php artisan config:clear`
 9. Run `php artisan migrate` to run migrations and create the products table in the database.
 10. Run `php artisan db:seed` to populate test data in the products table (optional). You may also create your own data using the create endpoint `(POST) /api/products`. *(see Products Rest API Endpoints section below)*.
 
-For feature tests, PHP extensions for `sqlite` must be enabled since it is used for running tests.
+For feature tests, PHP extensions for `sqlite` must be enabled since it is being used for running tests.
 * Run `php artisan test` or `php artisan test --filter ProductsTest` to make sure everything is working according to the written tests.
 
 ### Products Rest API Endpoints
@@ -265,69 +265,69 @@ For feature tests, PHP extensions for `sqlite` must be enabled since it is used 
     }
 2. `(GET) /api/products/{id}` - Fetch a single product
 
-Parameters: `id`
+    Parameters: `id`
 
-Response:
-```
-{
-    "data": {
-        "id": 25,
-        "name": "Et Odio Nobis",
-        "description": "Blanditiis sint omnis qui voluptatem eaque non iusto aut.",
-        "price": "4354.42",
-        "created_at": "2023-01-22T07:09:50.000000Z",
-        "updated_at": "2023-01-22T07:09:50.000000Z"
+    Response:
+    ```
+    {
+        "data": {
+            "id": 25,
+            "name": "Et Odio Nobis",
+            "description": "Blanditiis sint omnis qui voluptatem eaque non iusto aut.",
+            "price": "4354.42",
+            "created_at": "2023-01-22T07:09:50.000000Z",
+            "updated_at": "2023-01-22T07:09:50.000000Z"
+        }
     }
-}
-```
+    ```
 
 3. `(POST) /api/products` - Creates a product
 
-Request Data: `name, description, price`
+    Request Data: `name, description, price`
 
-Response:
-```
-{
-    "message": "Product was created successfully.",
-    "data": {
-        "name": "Product ABC",
-        "description": "Best product ever.",
-        "price": 123.45,
-        "updated_at": "2023-01-23T11:37:40.000000Z",
-        "created_at": "2023-01-23T11:37:40.000000Z",
-        "id": 105
+    Response:
+    ```
+    {
+        "message": "Product was created successfully.",
+        "data": {
+            "name": "Product ABC",
+            "description": "Best product ever.",
+            "price": 123.45,
+            "updated_at": "2023-01-23T11:37:40.000000Z",
+            "created_at": "2023-01-23T11:37:40.000000Z",
+            "id": 105
+        }
     }
-}
-```
+    ```
 
 4. `(PATCH) /api/products/{id}` - Update a product
 
-Request Data: `name, description, price`
+    Request Data: `name, description, price`
 
-Parameters: `id`
+    Parameters: `id`
 
-Response:
-```
-{
-    "message": "Product was updated successfully.",
-    "data": {
-        "id": 105,
-        "name": "Product XYZ",
-        "description": "The real best product ever.",
-        "price": "678.90",
-        "created_at": "2023-01-23T11:37:40.000000Z",
-        "updated_at": "2023-01-23T11:37:55.000000Z"
+    Response:
+    ```
+    {
+        "message": "Product was updated successfully.",
+        "data": {
+            "id": 105,
+            "name": "Product XYZ",
+            "description": "The real best product ever.",
+            "price": "678.90",
+            "created_at": "2023-01-23T11:37:40.000000Z",
+            "updated_at": "2023-01-23T11:37:55.000000Z"
+        }
     }
-}
-```
+    ```
 
 5. `(DELETE) /api/products/{id}` - Delete a product
 
-Parameters: `id`
+    Parameters: `id`
 
-Response:
-```
-{
-    "message": "Product was deleted successfully."
-}
-```
+    Response:
+    ```
+    {
+        "message": "Product was deleted successfully."
+    }
+    ```
