@@ -78,8 +78,6 @@ class ProductsTest extends TestCase
 
     public function test_fetching_products_with_invalid_pagination_query_params()
     {
-        $product = Product::factory()->count(100)->create();
-
         $page = 'test1';
         $recordsPerPage = 'test2';
 
@@ -112,11 +110,137 @@ class ProductsTest extends TestCase
 
     public function test_fetching_a_single_product_by_invalid_id()
     {
-        $product = Product::factory()->create();
-
         $invalidId = 'randomtestid';
 
         $response = $this->get('/api/products/'.$invalidId);
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'message' => 'Product was not found.'
+            ]);
+    }
+
+    public function test_creating_a_product_with_valid_data()
+    {
+        $data = [
+            'name' => 'Product ABC',
+            'description' => 'Best product ever.',
+            'price' => 123.45
+        ];
+
+        $response = $this->post('/api/products', $data);
+
+        $response->assertStatus(201)
+            ->assertJson([
+                'message' => 'Product was created successfully.',
+                'data' => [
+                    'name' => 'Product ABC',
+                    'description' => 'Best product ever.',
+                    'price' => 123.45
+                ]
+            ]);
+    }
+
+    public function test_creating_a_product_with_invalid_data()
+    {
+        $data = [
+            'name' => '',
+            'description' => '',
+            'price' => '123abc'
+        ];
+
+        $response = $this->post('/api/products', $data);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['name', 'description', 'price']);
+    }
+
+    public function test_updating_a_product_with_valid_data()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Product ABC',
+            'description' => 'Best product ever.',
+            'price' => 123.45
+        ]);
+
+        $data = [
+            'name' => 'Product XYZ',
+            'description' => 'The real best product ever.',
+            'price' => 678.90
+        ];
+
+        $response = $this->patch('/api/products/'.$product->id, $data);
+
+        $response->assertStatus(200)
+        ->assertJson([
+            'message' => 'Product was updated successfully.',
+            'data' => [
+                'name' => 'Product XYZ',
+                'description' => 'The real best product ever.',
+                'price' => 678.90
+            ]
+        ]);
+    }
+
+    public function test_updating_a_product_with_invalid_data()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Product ABC',
+            'description' => 'Best product ever.',
+            'price' => 123.45
+        ]);
+
+        $data = [
+            'name' => '',
+            'description' => '',
+            'price' => 'testprice'
+        ];
+
+        $response = $this->patch('/api/products/'.$product->id, $data);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['name', 'description', 'price']);
+    }
+
+    public function test_updating_a_product_with_invalid_id()
+    {
+        $data = [
+            'name' => 'Product XYZ',
+            'description' => 'The real best product ever.',
+            'price' => 678.90
+        ];
+
+        $invalidId = 'randomtestid';
+
+        $response = $this->patch('/api/products/'.$invalidId, $data);
+
+        $response->assertStatus(404)
+            ->assertJson([
+                'message' => 'Product was not found.'
+            ]);
+    }
+
+    public function test_deleting_a_product_with_valid_id()
+    {
+        $product = Product::factory()->create([
+            'name' => 'Product ABC',
+            'description' => 'Best product ever.',
+            'price' => 123.45
+        ]);
+
+        $response = $this->delete('/api/products/'.$product->id);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Product was successfully deleted.'
+            ]);
+    }
+
+    public function test_deleting_a_product_with_invalid_id()
+    {
+        $invalidId = 'randomtestid';
+
+        $response = $this->delete('/api/products/'.$invalidId);
 
         $response->assertStatus(404)
             ->assertJson([
