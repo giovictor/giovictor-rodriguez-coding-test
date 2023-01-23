@@ -38,9 +38,18 @@ class ProductsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+        $result = Product::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price')
+        ]);
+
+        return response()->json([
+            'message' => 'Product was created successfully.',
+            'data' => $result
+        ], 201);
     }
 
     /**
@@ -63,9 +72,20 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, Product $product)
     {
-        //
+        $product->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price')
+        ]);
+
+        $result = Product::find($product->id);
+
+        return response()->json([
+            'message' => 'Product was updated successfully.',
+            'data' => $result
+        ], 200);
     }
 
     /**
@@ -74,8 +94,12 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Product was deleted successfully.'
+        ], 200);
     }
 }

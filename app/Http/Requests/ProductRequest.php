@@ -29,7 +29,7 @@ class ProductRequest extends FormRequest
             $rules = [
                 'name' => 'required|max:255',
                 'description' => 'required',
-                'price' => 'required|decimal:2'
+                'price' => 'required|decimal:0,2'
             ];
         }
 
@@ -41,5 +41,12 @@ class ProductRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'price.decimal' => 'Price should only have up to two decimal places.'
+        ];
     }
 }

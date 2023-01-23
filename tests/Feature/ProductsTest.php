@@ -235,7 +235,7 @@ class ProductsTest extends TestCase
         $response = $this->deleteJson('/api/products/'.$product->id);
 
         $response->assertStatus(200)
-            ->assertJsonPath('message', 'Product was successfully deleted.');
+            ->assertJsonPath('message', 'Product was deleted successfully.');
     }
 
     public function test_deleting_a_product_with_invalid_id()
